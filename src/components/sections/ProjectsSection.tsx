@@ -32,8 +32,9 @@ export const ProjectsSection = () => {
                   src={project.imageSrc}
                   alt=""
                   className="aspect-4/3 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
+                  loading="eager"
+                  decoding="sync"
+                  fetchPriority="high"
                 />
               </div>
               <div className="mt-4 flex items-start justify-between gap-4">
