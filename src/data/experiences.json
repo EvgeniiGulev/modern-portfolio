@@ -1,0 +1,22 @@
+{
+  "experiences": [
+    {
+      "id": "personal-oss",
+      "yearLabel": "2018 - 2025",
+      "title": "Software Developer",
+      "company": "Personal & Open-Source Projects"
+    },
+    {
+      "id": "gobot",
+      "yearLabel": "2024 - 2026",
+      "title": "Frontend Developer",
+      "company": "GoBot LLC"
+    },
+    {
+      "id": "freelance",
+      "yearLabel": "2025 - 2026",
+      "title": "Freelance Frontend Developer",
+      "company": "Independent Clients"
+    }
+  ]
+}

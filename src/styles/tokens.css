@@ -1,0 +1,31 @@
+/**
+ * Design tokens — single source of truth.
+ * Tailwind v4 maps `--color-*` → utilities (`text-fg`, `bg-canvas`, `border-line`, …).
+ * Use these names in components instead of raw hex or long arbitrary values.
+ */
+@theme {
+  --color-fg: #e3e3e1;
+  --color-muted: #999999;
+  /** Slightly darker than `muted` — cursor ring, subtle emphasis */
+  --color-muted-dark: #7a7a7a;
+  --color-canvas: #0f0f0f;
+  --color-subtle: #0f0f0f;
+  --color-line: #292929;
+  --color-icon: #a1a1a1;
+
+  /* Semantic H1–H3 + body use --font-secondary (Inter Tight). --font-primary is Space Grotesk for accents / `font-primary`. */
+  --font-primary: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-secondary: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+/* Theme overrides consumed by token utilities (`text-fg`, `bg-canvas`, etc.) */
+html[data-theme="light"] {
+  --color-fg: #1a1a1a;
+  --color-muted: #666666;
+  --color-muted-dark: #555555;
+  --color-canvas: #f5f5f5;
+  --color-subtle: #ececec;
+  --color-line: #c9c9c9;
+  --color-icon: #666666;
+}

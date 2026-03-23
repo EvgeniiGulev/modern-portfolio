@@ -1,0 +1,20 @@
+{
+  "projects": [
+    {
+      "id": "n1-widgets",
+      "name": "N1 widgets",
+      "description": "Branding UI/UX",
+      "year": 2024,
+      "image": "primary-image.png",
+      "repoUrl": "https://github.com/"
+    },
+    {
+      "id": "h23",
+      "name": "H23",
+      "description": "Branding",
+      "year": 2026,
+      "image": "secondary-image.png",
+      "repoUrl": "https://github.com/"
+    }
+  ]
+}

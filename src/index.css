@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Explicit content paths — scan root HTML + all source under src (Tailwind v4 @source). */
+@source "../index.html";
+@source "./**/*.{html,js,ts,jsx,tsx}";
+
+@import "./styles/tokens.css";
+@import "./styles/base.css";
+@import "./styles/typography.css";
+@import "./styles/mixins.css";

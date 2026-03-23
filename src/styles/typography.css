@@ -1,0 +1,59 @@
+/* Semantic text utilities — in @layer components so @layer utilities always wins.
+ *
+ * text-headline-primary   — main hero / H1 (50px / 1.4, Inter Tight)
+ * text-headline-secondary — section H2 (50px / 1.2)
+ * text-headline-tertiary  — labels / H3 / UI lines (20px / 1.2, medium)
+ * text-body               — body copy (20px / 1.2, regular)
+ * text-mono-accent        — mono display blocks (32px)
+ */
+
+@layer components {
+  .text-headline-primary {
+    font-family: var(--font-secondary);
+    font-size: 50px;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+
+  .text-headline-secondary {
+    font-family: var(--font-secondary);
+    font-size: 50px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+
+  .text-headline-tertiary {
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+
+  .text-body {
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 400;
+  }
+
+  .text-mono-accent {
+    font-family: var(--font-mono);
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  @media (max-width: 768px) {
+    .text-headline-primary,
+    .text-headline-secondary {
+      font-size: clamp(32px, 9vw, 50px);
+    }
+
+    .text-mono-accent {
+      font-size: clamp(22px, 5vw, 32px);
+    }
+  }
+}

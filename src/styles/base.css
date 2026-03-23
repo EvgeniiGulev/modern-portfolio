@@ -1,0 +1,118 @@
+/* Global defaults — keep inside @layer base so utilities (margins, etc.) are not overridden. */
+
+:root {
+  /* ~1 at 1920px viewport; scales draggable block & play area together */
+  --dynamic-block-scale: clamp(0.5, calc(100vw / 1920px), 1.28);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-canvas);
+  }
+
+  /* Temporary class added on theme toggle for a smooth color transition */
+  html.theme-transitioning,
+  html.theme-transitioning body {
+    transition:
+      background-color 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition:
+      background-color 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      fill 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      stroke 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /** JS `CursorBubble` hides the system cursor when active */
+  html.cursor-bubble-active,
+  html.cursor-bubble-active * {
+    cursor: none !important;
+  }
+
+  html.cursor-bubble-active input,
+  html.cursor-bubble-active textarea,
+  html.cursor-bubble-active select,
+  html.cursor-bubble-active [contenteditable="true"] {
+    cursor: text !important;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-secondary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    color: #ff0000;
+    background-color: #000000;
+  }
+
+  ::-moz-selection {
+    color: #ff0000;
+    background-color: #000000;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  a {
+    all: unset;
+    display: inline;
+    cursor: inherit;
+  }
+
+  button {
+    all: unset;
+    display: inline-block;
+    cursor: inherit;
+    box-sizing: border-box;
+  }
+
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    cursor: text;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 1px solid var(--color-line);
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
