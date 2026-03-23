@@ -36,9 +36,8 @@ function BlockImage({
       src={item.imageSrc ?? ""}
       alt=""
       className={`shrink-0 object-contain ${isCircle ? "dynamic-block-circle-icon" : "dynamic-block-inline-icon"}`}
-      loading="eager"
-      decoding="sync"
-      fetchPriority="high"
+      loading="lazy"
+      decoding="async"
       style={
         isCircle
           ? {
@@ -185,21 +184,30 @@ export const DynamicBlocks = () => {
 
     let mouse: Matter.Mouse | null = null;
     let mouseConstraint: Matter.MouseConstraint | null = null;
-    try {
-      mouse = Matter.Mouse.create(container);
-      mouseConstraint = Matter.MouseConstraint.create(engine, {
-        mouse,
-        constraint: {
-          stiffness: PHYSICS_DEFAULTS.mouseStiffness,
-          damping: 0.1,
-        },
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (mouseConstraint.constraint as any).angularStiffness = 0;
-      Matter.Composite.add(engine.world, mouseConstraint);
-    } catch {
-      mouse = null;
-      mouseConstraint = null;
+    const canInitMouse =
+      typeof window !== "undefined" &&
+      ("onpointerdown" in window || "ontouchstart" in window || "onmousedown" in window);
+    if (canInitMouse) {
+      try {
+        mouse = Matter.Mouse.create(container);
+        mouseConstraint = Matter.MouseConstraint.create(engine, {
+          mouse,
+          constraint: {
+            stiffness: PHYSICS_DEFAULTS.mouseStiffness,
+            damping: 0.1,
+          },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (mouseConstraint.constraint as any).angularStiffness = 0;
+        Matter.Composite.add(engine.world, mouseConstraint);
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to initialize Matter.js mouse interaction", error);
+        }
+        mouse = null;
+        mouseConstraint = null;
+      }
     }
 
     const mouseWithInput = mouse as (Matter.Mouse & {
