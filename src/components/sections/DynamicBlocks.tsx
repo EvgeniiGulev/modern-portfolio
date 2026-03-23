@@ -36,6 +36,8 @@ function BlockImage({
       src={item.imageSrc ?? ""}
       alt=""
       className={`shrink-0 object-contain ${isCircle ? "dynamic-block-circle-icon" : "dynamic-block-inline-icon"}`}
+      loading="lazy"
+      decoding="async"
       style={
         isCircle
           ? {

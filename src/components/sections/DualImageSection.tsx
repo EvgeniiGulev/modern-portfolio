@@ -8,12 +8,27 @@ const unveilTransition = {
   ease: [0.04, 0.75, 0.12, 1] as const,
 };
 
-function UnveilImage({ src, alt }: { src: string; alt: string }) {
+function UnveilImage({
+  src,
+  alt,
+  priority = false,
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+}) {
   const reduce = useReducedMotion();
 
   return (
     <div className="relative w-full overflow-hidden">
-      <img src={src} alt={alt} className="block h-auto w-full" />
+      <img
+        src={src}
+        alt={alt}
+        className="block h-auto w-full"
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+        fetchPriority={priority ? "high" : "auto"}
+      />
       <motion.div
         aria-hidden
         className="absolute inset-0 z-10 bg-canvas"
@@ -29,7 +44,7 @@ export const DualImageSection = () => {
   return (
     <div className="flex flex-col gap-4 md:flex-row">
       <div className="w-full md:w-1/2">
-        <UnveilImage src={IPrimary} alt="Portfolio image one" />
+        <UnveilImage src={IPrimary} alt="Portfolio image one" priority />
       </div>
       <div className="w-full md:w-1/2">
         <UnveilImage src={ISecondary} alt="Portfolio image two" />

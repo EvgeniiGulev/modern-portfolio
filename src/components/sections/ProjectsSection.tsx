@@ -33,6 +33,7 @@ export const ProjectsSection = () => {
                   alt=""
                   className="aspect-4/3 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="mt-4 flex items-start justify-between gap-4">
