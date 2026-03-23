@@ -16,7 +16,9 @@ export const ProjectsSection = () => {
       </div>
 
       <ul className="flex flex-wrap gap-x-4 gap-y-16">
-        {PROJECTS.map((project) => (
+        {PROJECTS.map((project, index) => {
+          const isPriority = index === 0;
+          return (
           <li
             key={project.id}
             className="w-full min-w-0 sm:w-[calc(50%-0.5rem)]"
@@ -32,8 +34,9 @@ export const ProjectsSection = () => {
                   src={project.imageSrc}
                   alt=""
                   className="aspect-4/3 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                  loading="lazy"
+                  loading={isPriority ? "eager" : "lazy"}
                   decoding="async"
+                  fetchPriority={isPriority ? "high" : "auto"}
                 />
               </div>
               <div className="mt-4 flex items-start justify-between gap-4">
@@ -45,7 +48,8 @@ export const ProjectsSection = () => {
               <p className="mt-3 text-body text-muted">{project.description}</p>
             </a>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );

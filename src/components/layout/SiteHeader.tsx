@@ -72,7 +72,16 @@ export const SiteHeader = ({ mode = "default" }: SiteHeaderProps) => {
         <span
           className={`inline-block transition-transform duration-300 ease-out ${themeIconFlipped ? "rotate-180" : ""}`}
         >
-          <img src={themeSwitchPng} alt="" width={30} height={30} className="block border-0 outline-none" />
+          <img
+            src={themeSwitchPng}
+            alt=""
+            width={30}
+            height={30}
+            className="block border-0 outline-none"
+            loading="eager"
+            decoding="sync"
+            fetchPriority="high"
+          />
         </span>
       </button>
     </header>

@@ -88,7 +88,6 @@ function BlockContent({ item }: { item: DynamicBlockItem }) {
 export const DynamicBlocks = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
-  /** Bumps when play area size changes so Matter bodies match measured DOM after fluid CSS resize */
   const [physicsLayoutKey, setPhysicsLayoutKey] = useState(0);
   const lastContainerSize = useRef({ w: 0, h: 0 });
   const resizePrimed = useRef(false);
@@ -98,13 +97,8 @@ export const DynamicBlocks = () => {
     if (!container) return;
 
     let t: ReturnType<typeof setTimeout> | undefined;
-    const ro = new ResizeObserver(([entry]) => {
-      const w = Math.round(entry.contentRect.width);
-      const h = Math.round(entry.contentRect.height);
-      if (
-        w === lastContainerSize.current.w &&
-        h === lastContainerSize.current.h
-      ) {
+    const onSize = (w: number, h: number) => {
+      if (w === lastContainerSize.current.w && h === lastContainerSize.current.h) {
         return;
       }
       lastContainerSize.current = { w, h };
@@ -114,11 +108,27 @@ export const DynamicBlocks = () => {
       }
       if (t) clearTimeout(t);
       t = setTimeout(() => setPhysicsLayoutKey((k) => k + 1), 120);
-    });
-    ro.observe(container);
+    };
+
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(([entry]) => {
+        onSize(Math.round(entry.contentRect.width), Math.round(entry.contentRect.height));
+      });
+      ro.observe(container);
+      return () => {
+        if (t) clearTimeout(t);
+        ro.disconnect();
+      };
+    }
+
+    const onWindowResize = () => {
+      onSize(container.clientWidth, container.clientHeight);
+    };
+    onWindowResize();
+    window.addEventListener("resize", onWindowResize);
     return () => {
       if (t) clearTimeout(t);
-      ro.disconnect();
+      window.removeEventListener("resize", onWindowResize);
     };
   }, []);
 
@@ -139,7 +149,6 @@ export const DynamicBlocks = () => {
     const ch = container.clientHeight;
     if (cw < 40 || ch < 40) return;
 
-    /** Mirrors `:root { --dynamic-block-scale: clamp(0.5, …) }` — used for wall padding */
     const blockScale = Math.min(1.28, Math.max(0.5, window.innerWidth / 1920));
     const pad = Math.max(8, Math.round(12 * blockScale));
 
@@ -173,24 +182,39 @@ export const DynamicBlocks = () => {
     }
     Matter.Composite.add(engine.world, bodies);
 
-    const mouse = Matter.Mouse.create(container);
+    let mouse: Matter.Mouse | null = null;
+    let mouseConstraint: Matter.MouseConstraint | null = null;
+    const canInitMouse =
+      typeof window !== "undefined" &&
+      ("onpointerdown" in window || "ontouchstart" in window || "onmousedown" in window);
+    if (canInitMouse) {
+      try {
+        mouse = Matter.Mouse.create(container);
+        mouseConstraint = Matter.MouseConstraint.create(engine, {
+          mouse,
+          constraint: {
+            stiffness: PHYSICS_DEFAULTS.mouseStiffness,
+            damping: 0.1,
+          },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (mouseConstraint.constraint as any).angularStiffness = 0;
+        Matter.Composite.add(engine.world, mouseConstraint);
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to initialize Matter.js mouse interaction", error);
+        }
+        mouse = null;
+        mouseConstraint = null;
+      }
+    }
 
-    const mouseConstraint = Matter.MouseConstraint.create(engine, {
-      mouse,
-      constraint: {
-        stiffness: PHYSICS_DEFAULTS.mouseStiffness,
-        damping: 0.1,
-      },
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (mouseConstraint.constraint as any).angularStiffness = 0;
-    Matter.Composite.add(engine.world, mouseConstraint);
-
-    const mouseWithInput = mouse as Matter.Mouse & {
+    const mouseWithInput = mouse as (Matter.Mouse & {
       mouseup: (event: Event) => void;
-    };
+    }) | null;
     const releaseDrag = (event: Event) => {
-      if (mouseWithInput.button !== -1) mouseWithInput.mouseup(event);
+      if (mouseWithInput && mouseWithInput.button !== -1) mouseWithInput.mouseup(event);
     };
     container.addEventListener("mouseleave", releaseDrag);
     container.addEventListener("pointerleave", releaseDrag);
@@ -229,10 +253,10 @@ export const DynamicBlocks = () => {
       window.removeEventListener("mouseup", releaseDrag);
       Matter.Events.off(engine, "afterUpdate", onAfterUpdate);
       Matter.Runner.stop(runner);
-      Matter.Composite.remove(engine.world, mouseConstraint);
+      if (mouseConstraint) Matter.Composite.remove(engine.world, mouseConstraint);
       Matter.World.clear(engine.world, false);
       Matter.Engine.clear(engine);
-      Matter.Mouse.clearSourceEvents(mouse);
+      if (mouse) Matter.Mouse.clearSourceEvents(mouse);
     };
   }, [physicsLayoutKey]);
 

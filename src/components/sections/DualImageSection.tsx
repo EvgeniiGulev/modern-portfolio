@@ -8,15 +8,13 @@ const unveilTransition = {
   ease: [0.04, 0.75, 0.12, 1] as const,
 };
 
-function UnveilImage({
-  src,
-  alt,
-  priority = false,
-}: {
+type UnveilImageProps = {
   src: string;
   alt: string;
   priority?: boolean;
-}) {
+};
+
+function UnveilImage({ src, alt, priority = false }: UnveilImageProps) {
   const reduce = useReducedMotion();
 
   return (
